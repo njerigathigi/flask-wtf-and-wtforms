@@ -24,8 +24,9 @@ class GreetUserForm(FlaskForm):
 # DataRequired():The username field will not be validated if there is no input data
 # If you inspect the form element, you'll see that WTForms automatically added the required attribute to the input field:
 # WTForms adds a basic front-end validation to our form field.
-# To set a validation rule that only allows characters that are 5 characters long
-# Use Length() validator with min parameter.
+# To set a validation rule that only allows characters that are 5 characters and 60 characters long
+# Use Length() validator with min and max parameters.
+
 @app.route('/', methods=["GET", "POST"]) #A route displays and processes our form
 def index():
     form = GreetUserForm()
