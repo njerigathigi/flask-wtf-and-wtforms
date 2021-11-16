@@ -12,10 +12,10 @@ app.config['SECRET_KEY'] = "longandrandomsecretkey"
 # WTForms will use the SECRET_KEY as a salt to create a CSRF token.
 class CreateUserForm(FlaskForm):
     username = StringField(label=('Username'), validators=[DataRequired(), Length(max=64)])
-    email = StringField(label=('Email'), Validators=[DataRequired(), Email(), Length(max=120)])
+    email = StringField(label=('Email'), validators=[DataRequired(), Email(), Length(max=120)])
     password = PasswordField(label=('Password'), validators=[DataRequired(),Length(min=8, message="Password should be atleast %(min)d characters long")])
-    confirm_password = PasswordField(label=('Confirm Password'), Validators=[DataRequired(message="*Required"), EqualTo('password', message="Both Password fields must be equal!") ])
-    receive_emails = BooleanField(label=("Receive marketting emails?"))
+    confirm_password = PasswordField(label=('Confirm Password'), validators=[DataRequired(message="*Required"), EqualTo('password', message="Both Password fields must be equal!") ])
+    receive_emails = BooleanField(label=('Receive emails'))
     submit = SubmitField(label=('Submit'))
 
 # GreetUserForm class contains a StringField. As the name implies, this field expects and 
@@ -36,7 +36,7 @@ class CreateUserForm(FlaskForm):
 # True (Checked) or False (Unchecked) values.
 @app.route('/', methods=["GET", "POST"]) #A route displays and processes our form
 def index():
-    form = GreetUserForm()
+    form = CreateUserForm()
     if form.validate_on_submit():
         return f"<h1> Welcome {form.username.data} </h1>" 
     return render_template("index.html", form=form)
