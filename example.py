@@ -11,6 +11,12 @@ app.config['SECRET_KEY'] = "longandrandomsecretkey"
 # The SECRET_KEY is commonly used for encryption with database connections and browser sessions. 
 # WTForms will use the SECRET_KEY as a salt to create a CSRF token.
 class CreateUserForm(FlaskForm):
+    def validate_username(self, username):
+        excluded_chars = " *?!'^+%&/()=}][{$#"
+        for char in self.username.data:
+            if char in excluded_chars:
+                raise ValidationError(f"Character {char} is not allowed in username")
+
     username = StringField(label=('Username'), validators=[DataRequired(), Length(max=64)])
     email = StringField(label=('Email'), validators=[DataRequired(), Email(), Length(max=120)])
     password = PasswordField(label=('Password'), validators=[DataRequired(),Length(min=8, message="Password should be atleast %(min)d characters long")])
@@ -34,6 +40,10 @@ class CreateUserForm(FlaskForm):
 # PasswordField hides the password text on the front-end.
 # BooleanField renders as a checkbox on the front-end since it only contains either 
 # True (Checked) or False (Unchecked) values.
+# WTForms allows us to add custom validators by adding a validation method 
+# WTForms will run validation methods automatically once defined.
+# The ValidationError class gives us a convenient way to define our custom validation message.
+# Flask-WTforms provides very powerful and easy to learn ways to handle form data.
 @app.route('/', methods=["GET", "POST"]) #A route displays and processes our form
 def index():
     form = CreateUserForm()
