@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = "longandrandomsecretkey"
 # The SECRET_KEY is commonly used for encryption with database connections and browser sessions. 
 # WTForms will use the SECRET_KEY as a salt to create a CSRF token.
 class GreetUserForm(FlaskForm):
-    username = StringField( label = ("Enter Your Name:"), validators= [ DataRequired(), Length(min=5) ])
+    username = StringField( label = ("Enter Your Name:"), validators= [ DataRequired(), Length(min=5, max=60) ])
     submit = SubmitField( label = ("Submit"))
 # GreetUserForm class contains a StringField. As the name implies, this field expects and 
 # will return a string value.
