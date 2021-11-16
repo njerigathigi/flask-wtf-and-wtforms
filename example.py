@@ -1,7 +1,7 @@
 from flask import Flask, render_template  
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 app = Flask(__name__, template_folder = ".") 
 # We created a Flask object and set template_folder to the current folder.
@@ -10,9 +10,14 @@ app.config['SECRET_KEY'] = "longandrandomsecretkey"
 # We added SECRET_KEY to our app object's configuration.
 # The SECRET_KEY is commonly used for encryption with database connections and browser sessions. 
 # WTForms will use the SECRET_KEY as a salt to create a CSRF token.
-class GreetUserForm(FlaskForm):
-    username = StringField( label = ("Enter Your Name:"), validators= [ DataRequired(), Length(min=5, max=60) ])
-    submit = SubmitField( label = ("Submit"))
+class CreateUserForm(FlaskForm):
+    username = StringField(label=('Username'), validators=[DataRequired(), Length(max=64)])
+    email = StringField(label=('Email'), Validators=[DataRequired(), Email(), Length(max=120)])
+    password = PasswordField(label=('Password'), validators=[DataRequired(),Length(min=8, message="Password should be atleast %(min)d characters long")])
+    confirm_password = PasswordField(label=('Confirm Password'), Validators=[DataRequired(message="*Required"), EqualTo('password', message="Both Password fields must be equal!") ])
+    receive_emails = BooleanField(label=("Receive marketting emails?"))
+    submit = SubmitField(label=('Submit'))
+
 # GreetUserForm class contains a StringField. As the name implies, this field expects and 
 # will return a string value.
 # The name of the field is username, and we'll use this name to access data of the form element.
@@ -26,7 +31,9 @@ class GreetUserForm(FlaskForm):
 # WTForms adds a basic front-end validation to our form field.
 # To set a validation rule that only allows characters that are 5 characters and 60 characters long
 # Use Length() validator with min and max parameters.
-
+# PasswordField hides the password text on the front-end.
+# BooleanField renders as a checkbox on the front-end since it only contains either 
+# True (Checked) or False (Unchecked) values.
 @app.route('/', methods=["GET", "POST"]) #A route displays and processes our form
 def index():
     form = GreetUserForm()
